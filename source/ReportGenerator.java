@@ -11,21 +11,20 @@ import java.util.List;
 
 public class ReportGenerator {
 
+    // Переделать. Брать параметры из настроечного файла.
     int PAGE_WIDTH = 32;
     int PAGE_HEIGH = 12;
     int[] columnWidth = {8, 7, 7};
     String[] columnTitle = {"Номер", "Дата", "ФИО"};
+
     String dataFile = "C:/projects/java-courses/src/main/java/ru/lesson/lessons/ReportGenerator/docs/source-data.txt";
     //String dataFile = "../docs/source-data.txt";
-
 
     ArrayList<ArrayList<ArrayList<String>>> arrayListReport; // массив cо всеми данными отчета. [строка].[столбец].[номер строки в ячейке]
 
 
 
-
     public static void main(String[] args){
-
         new ReportGenerator();
     }
 
@@ -33,8 +32,9 @@ public class ReportGenerator {
     public ReportGenerator(){
         readTextFile(dataFile);
 
-
     }
+
+
 
 
     // переводим текстовый файл в массив arrayListReport (1 строка в массиве = 1 строка в ячейке отчета)
@@ -86,6 +86,7 @@ public class ReportGenerator {
         }
 
 
+        // выводим содержание массива cо всеми данными отчета
         for (int i1=0;i1<arrayListReport.size();i1++){
             for (int i2=0;i2<arrayListReport.get(i1).size();i2++){
                 for (int i3=0;i3<arrayListReport.get(i1).get(i2).size();i3++){
@@ -185,15 +186,15 @@ public class ReportGenerator {
 
         while(i<words.size()){
             nextWord=words.get(i);
-            if((stringWords.length() + nextWord.length() <= columnWidth)) {
+            if((stringWords.length() + nextWord.length() <= columnWidth)) { // если слово влезает в колонку - то увеличиваем фразу
                 stringWords=stringWords+nextWord;
             }
-            else{
+            else{ // если слово не влезает в колонку - то добавляем фразу в массив и начинаем ее заново
                 wordsJoined.add(stringWords);
                 stringWords=nextWord.trim();
             }
 
-            if(i==words.size()-1){
+            if(i==words.size()-1){ // добавляем последнюю фразу в массив
                 wordsJoined.add(stringWords);
             }
 
