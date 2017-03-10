@@ -11,19 +11,17 @@ import java.util.List;
 
 public class ReportGenerator {
 
-    //ArrayList<String> wordsSplitted; // массив слов в одной ячейке отчета (отдельные слова)
-    //ArrayList<String> wordsJoined; // массив слов в одной ячейке отчета (слова объединены по строкам)
     int PAGE_WIDTH = 32;
     int PAGE_HEIGH = 12;
     int[] columnWidth = {8, 7, 7};
     String[] columnTitle = {"Номер", "Дата", "ФИО"};
-    String dataFile = "C:\\Java\\TestTasks\\Simpletesttask_texuna\\source-data.txt";
+    String dataFile = "C:/projects/java-courses/src/main/java/ru/lesson/lessons/ReportGenerator/docs/source-data.txt";
+    //String dataFile = "../docs/source-data.txt";
+
 
     ArrayList<ArrayList<ArrayList<String>>> arrayListReport; // массив cо всеми данными отчета. [строка].[столбец].[номер строки в ячейке]
 
 
-    //ArrayList<String> rowSource; // массив c исходными данными из одной строки (ячейки отчета разделены по элементам массива)
-    //ArrayList<ArrayList<String>> arrayListRow; // массив c исходными данными из одной строки (ячейки отчета разделены по элементам массива)
 
 
     public static void main(String[] args){
@@ -112,7 +110,6 @@ public class ReportGenerator {
         ArrayList<ArrayList<String>> arrayListDim2 = new ArrayList<ArrayList<String>>();
 
         for (int i=0;i<arrayListDim1.size();i++) {
-            //arrayListTemp = StringToArrayList(arrayListDim1.get(i), "\t");
             arrayListTemp = SplitStringToWords(arrayListDim1.get(i));
             arrayListDim2.add(arrayListTemp);
         }
@@ -123,7 +120,6 @@ public class ReportGenerator {
 
     // преобразуем строку в ArrayList
     public ArrayList<String> StringToArrayList(String stringSource, String delimiter) {
-        //rowSource = new ArrayList<String>();
         String[] arrayRowSource = stringSource.split("\t");
         List listRowSource = Arrays.asList(arrayRowSource);
         ArrayList<String> rowSource = new ArrayList(listRowSource);
