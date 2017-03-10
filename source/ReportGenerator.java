@@ -11,6 +11,7 @@ import java.util.List;
 
 public class ReportGenerator {
 
+
     // Переделать. Брать параметры из настроечного файла.
     int PAGE_WIDTH = 32;
     int PAGE_HEIGH = 12;
@@ -18,6 +19,7 @@ public class ReportGenerator {
     String[] columnTitle = {"Номер", "Дата", "ФИО"};
 
     String dataFile = "C:/projects/java-courses/src/main/java/ru/lesson/lessons/ReportGenerator/docs/source-data.txt";
+    //String dataFile = "C:/projects/java-courses/src/main/java/ru/lesson/lessons/ReportGenerator/docs/sd.txt";
     //String dataFile = "../docs/source-data.txt";
 
     ArrayList<ArrayList<ArrayList<String>>> arrayListReport; // массив cо всеми данными отчета. [строка].[столбец].[номер строки в ячейке]
@@ -39,6 +41,11 @@ public class ReportGenerator {
 
     // переводим текстовый файл в массив arrayListReport (1 строка в массиве = 1 строка в ячейке отчета)
     public void readTextFile(String textFile) {
+
+        //char c = '';
+        //int i = (int)'d';
+        //System.out.println(""+(int)'');
+
         ArrayList<String> rowSource; // массив c исходными данными из одной строки (ячейки отчета разделены по элементам массива)
         ArrayList<ArrayList<String>> arrayListRow; // массив c исходными данными из одной строки (ячейки отчета разделены по элементам массива)
         ArrayList<ArrayList<String>> arrayListRowJoined; // массив c исходными данными из одной строки (ячейки отчета разделены по элементам массива)
@@ -46,6 +53,8 @@ public class ReportGenerator {
 
 
         arrayListReport = new ArrayList<ArrayList<ArrayList<String>>>();
+
+        String stringTemp;
 
 
         // записываем заголовки в массив
@@ -67,8 +76,20 @@ public class ReportGenerator {
                 //System.out.println("-------------");
                 //System.out.println(strLine);
 
-                rowSource = StringToArrayList(strLine, "\t"); // массив ячеек (ячейка в виде строки)
+                //char c = strLine.charAt(0);
+                //int i = (int)'d';
+                //System.out.println("---"+(int)strLine.charAt(0)); // 65279
+                //strLine=strLine.substring(1);
+                //System.out.println(strLine.substring(1));
 
+                // удаляем символ 65279 (начало текстового файла с кодировкой UTF-8)
+                if((int)strLine.charAt(0)==65279){
+                    stringTemp=strLine.substring(1);
+                    strLine=stringTemp;
+                }
+
+
+                rowSource = StringToArrayList(strLine, "\t"); // массив ячеек (ячейка в виде строки)
                 arrayListRow = ArrayListToArrayListDim2(rowSource); // массив ячеек (ячейка в виде ArrayList<String>)
 
                 arrayListRowJoined = new ArrayList<ArrayList<String>>();
@@ -77,7 +98,6 @@ public class ReportGenerator {
                     arrayListTemp = JoinWords(arrayListRow.get(i), columnWidth[i]); // стыкуем слова
                     arrayListRowJoined.add(i,arrayListTemp);
                 }
-
                 arrayListReport.add(arrayListRowJoined);
             }
 
@@ -86,21 +106,103 @@ public class ReportGenerator {
         }
 
 
+        int countRows = arrayListReport.size(); // количество строк в отчете
+        int[] countWords = new int[countRows]; //массив с максимальным кол-вом строк в ячейке [номер строки в отчете]
+        int countWordsInCell;
+        int countWordsInCellMax;
+
+        // добавляем пробелы в ячейки
+
+        // заполняем массив с максимальным кол-вом строк в ячейке
+        for (int i1=0;i1<arrayListReport.size();i1++){ // перебираем строки
+            for (int i2=0;i2<arrayListReport.get(i1).size();i2++){ // перебираем столбцы
+                countWordsInCell=arrayListReport.get(i1).get(i2).size(); // записываем в массив countWords максимальное кол-во строк в ячейке
+                if (countWords[i1]<countWordsInCell){
+                    countWords[i1] = countWordsInCell;
+                }
+            }
+        }
+
+        // добавляем строки в ячейки
+        for (int i1=0;i1<arrayListReport.size();i1++){ // перебираем строки
+            for (int i2=0;i2<arrayListReport.get(i1).size();i2++){ // перебираем столбцы
+                countWordsInCell=arrayListReport.get(i1).get(i2).size();
+                countWordsInCellMax=countWords[i1];
+                if (countWordsInCell < countWordsInCellMax){
+                    for(int i=0;i<(countWordsInCellMax-countWordsInCell);i++){
+                        arrayListReport.get(i1).get(i2).add("");
+                    }
+                }
+            }
+        }
+
+
+
+        // добавляем пробелы в ячейки
+        String cellRow="";
+        for (int i1=0;i1<arrayListReport.size();i1++){ // перебираем строки
+            for (int i2=0;i2<arrayListReport.get(i1).size();i2++){ // перебираем столбцы
+                for (int i3=0;i3<arrayListReport.get(i1).get(i2).size();i3++){ // перебираем строки внутри ячейки
+                    cellRow = arrayListReport.get(i1).get(i2).get(i3);
+                    arrayListReport.get(i1).get(i2).set(i3, " " + cellRow.concat(RepeatString(" ", (columnWidth[i2] - cellRow.length() + 1))));
+                }
+            }
+        }
+
+
+        // выводим отчет
+        for (int i1=0;i1<arrayListReport.size();i1++){ // перебираем строки
+                for (int i3=0;i3<countWords[i1];i3++){ // перебираем строки внутри ячейки
+                    System.out.print("|");
+                    for (int i2=0;i2<columnWidth.length;i2++){ // перебираем столбцы
+                        System.out.print(arrayListReport.get(i1).get(i2).get(i3) + "|");
+                    }
+                    System.out.print("\n");
+                }
+            System.out.println(RepeatString("-",PAGE_WIDTH));
+        }
+
+
+/*
         // выводим содержание массива cо всеми данными отчета
-        for (int i1=0;i1<arrayListReport.size();i1++){
-            for (int i2=0;i2<arrayListReport.get(i1).size();i2++){
-                for (int i3=0;i3<arrayListReport.get(i1).get(i2).size();i3++){
+        for (int i1=0;i1<arrayListReport.size();i1++){ // перебираем строки
+            //System.out.println("countWords[" + i1 + "] = " + countWords[i1]);
+            for (int i2=0;i2<arrayListReport.get(i1).size();i2++){ // перебираем столбцы
+                //System.out.println(arrayListReport.get(i1).get(i2).size());
+                for (int i3=0;i3<arrayListReport.get(i1).get(i2).size();i3++){ // перебираем строки внутри ячейки
                     System.out.println(arrayListReport.get(i1).get(i2).get(i3));
                 }
                 System.out.println("--");
             }
             System.out.println("-----");
         }
+*/
+
+
 
 
     }
 
+    /*
+    public int sumArrayInt(int[] arr) {
+        int sum=0;
+        for(int i=0; i<arr.length; i++) {
+            sum=sum+arr[i];
+        }
+        return sum;
+    }
+    */
 
+    // повторяем строку n раз
+    public String RepeatString(String symbol, int count) {
+        String stringOut="";
+
+        for(int i=0;i<count;i++){
+            stringOut+=symbol;
+        }
+
+        return stringOut;
+    }
 
 
 
