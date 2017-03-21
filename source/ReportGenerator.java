@@ -248,6 +248,15 @@ public class ReportGenerator {
         String wordCurrent="";
         ArrayList<String> wordsSplitted =  new ArrayList<String>();
 
+
+        /*
+        // переделать проверку на регулярное выражение:
+        Pattern pattern = Pattern.compile("[A-Za-zА-Яа-я\\_]{1}[A-Za-zА-Яа-я0-9\\_]{0,}");
+        //Pattern pattern = Pattern.compile("[A-Za-z0-9]*");
+        //Matcher matcher = pattern.matcher("abdcaeeexyzefsdfD");
+        Matcher matcher = pattern.matcher("2dsцйВf3_ВЦeda");
+        System.out.println(matcher.matches());
+         */
         for(int i=0;i<s.length();i++){
             charCurrent=String.valueOf(s.charAt(i));
             isWordPartCurrent=charCurrent.matches("[a-zA-Zа-яА-Я0-9]");
